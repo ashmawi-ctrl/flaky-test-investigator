@@ -76,7 +76,21 @@ Each run records:
 - duration
 - timeout state
 
-The first version keeps all evidence in memory and prints a compact terminal summary. Machine-readable reports are intentionally left for a later change.
+The tool prints a compact terminal summary by default and can also emit the full investigation as JSON for CI artifacts or later comparison.
+
+## JSON reports
+
+For an archival report:
+
+```bash
+flaky-test-investigator \
+  --runs 30 \
+  --format json \
+  --output artifacts/flaky-worker.json \
+  -- python -m pytest tests/test_worker.py::test_retry -q
+```
+
+The JSON report includes the verdict, pass/fail/timeout counts, average / p50 / p95 / max duration, and the full captured evidence for every run.
 
 ## Timeout semantics
 
@@ -112,7 +126,8 @@ The first implementation is tracked through:
 - branch `feat/repeated-test-analysis`
 - deterministic pass/fail/flaky/timeout tests
 - GitHub Actions lint and test checks
-- a reviewable pull request
+- [PR #2](https://github.com/ashmawi-ctrl/flaky-test-investigator/pull/2) for the first stable/flaky classifier
+- [Issue #3](https://github.com/ashmawi-ctrl/flaky-test-investigator/issues/3) → [PR #4](https://github.com/ashmawi-ctrl/flaky-test-investigator/pull/4) for JSON reports and timing percentiles
 
 ## Deliberate limitations
 
@@ -122,7 +137,7 @@ The first implementation is tracked through:
 - no random seed injection yet
 - no environment snapshotting
 - no CPU or memory telemetry
-- no JSON/Markdown report yet
+- no Markdown report yet
 - no historical GitHub Actions ingestion
 
 Those are deliberate boundaries. The current project answers one question clearly before adding test-runner-specific behavior.
@@ -130,8 +145,6 @@ Those are deliberate boundaries. The current project answers one question clearl
 ## Next investigations
 
 - record an explicit seed per run
-- machine-readable JSON reports
-- percentile timing summary
 - stop-after-first-failure vs full-sample modes
 - environment fingerprinting
 - pytest integration
