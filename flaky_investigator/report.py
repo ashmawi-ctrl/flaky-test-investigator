@@ -1,7 +1,7 @@
 import json
 import math
+from collections.abc import Iterable
 from dataclasses import asdict
-from typing import Iterable
 
 from .models import InvestigationResult
 
